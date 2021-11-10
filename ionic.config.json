@@ -1,0 +1,14 @@
+{
+  "name": "invite",
+  "integrations": {
+    "capacitor": {},
+    "cordova": {}
+  },
+  "proxies": [
+    {
+      "path": "/users",
+      "proxyUrl": "http://localhost:8080/api/users"
+    }
+  ],
+  "type": "angular"
+}

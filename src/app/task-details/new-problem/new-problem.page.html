@@ -1,0 +1,78 @@
+<div id="problem-heading"
+     style="background-color: #178e17;box-shadow: 0 0 0 rgba(0, 0, 0, 0.16), 0 1px 6px rgba(0, 0, 0, 0.22);padding: 2px;">
+    <div style="display: flex;width: 100%;padding: 5px;">
+        <ion-icon name="arrow-back" (click)="back()" style="font-size: 18px;color: white;padding: 5px;"></ion-icon>
+        <span style="color: white;padding: 5px;font-size: 16px;">New Problem</span>
+    </div>
+</div>
+
+<div id="problem-content" style="overflow-y: auto;background-color: lightgrey;">
+    <ion-card>
+        <ion-card-content style="padding: 0;">
+            <ion-item>
+                <ion-label position="stacked">Type *</ion-label>
+                <ion-select placeholder="Select Type" [(ngModel)]="newProblem.typeObject">
+                    <ion-select-option *ngFor="let type of types" [value]="type">{{type.label}}</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Title *</ion-label>
+                <ion-input type="text" [(ngModel)]="newProblem.title" placeholder="Enter Title"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Priority *</ion-label>
+                <ion-select placeholder="Select Priority" [(ngModel)]="newProblem.priorityObject">
+                    <ion-select-option *ngFor="let priority of priorities">{{priority}}</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Assigned To *</ion-label>
+                <ion-select placeholder="Select Person" [(ngModel)]="newProblem.assignedToObject">
+                    <ion-select-option *ngFor="let person of projectPersons" [value]="person">{{person.fullName}}
+                    </ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Description</ion-label>
+                <ion-textarea rows="3" [(ngModel)]="newProblem.description"
+                              placeholder="Enter Description"></ion-textarea>
+            </ion-item>
+
+            <div style="display: inline-flex;width:100%;">
+                <span style="padding: 10px">Image : </span>
+                <ion-icon name="camera" style="font-size: 30px;padding:5px 10px;"
+                          (click)="takePicture('camera')"></ion-icon>
+                <ion-icon name="image" style="font-size: 30px;padding:5px 0px;"
+                          (click)="takePicture('gallery')"></ion-icon>
+            </div>
+            <br>
+
+            <div *ngFor="let imageObject of images">
+                <ion-row style="width: 100%;border: 1px solid lightgrey;">
+                    <ion-col size="5">
+                        <img src="{{imageObject.image}}" style="max-height: 150px;width: 100%;">
+                    </ion-col>
+                    <ion-col size="7">
+                        <ion-textarea rows="3" [(ngModel)]="imageObject.description"
+                                      placeholder="Enter Description"></ion-textarea>
+                    </ion-col>
+                </ion-row>
+            </div>
+
+            <ion-row style="width: 100%;border: 1px solid lightgrey;" *ngIf="image != null">
+                <ion-col size="5">
+                    <img src="{{image}}" style="max-height: 150px;width: 100%;">
+                </ion-col>
+                <ion-col size="7">
+                    <ion-textarea rows="3" [(ngModel)]="imageDescription"
+                                  placeholder="Enter Description"></ion-textarea>
+                </ion-col>
+            </ion-row>
+            <div>
+                <ion-button color="primary" size="small"
+                            (click)="createProblem()">Create
+                </ion-button>
+            </div>
+        </ion-card-content>
+    </ion-card>
+</div>

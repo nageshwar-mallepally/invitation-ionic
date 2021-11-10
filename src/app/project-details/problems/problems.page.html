@@ -1,0 +1,186 @@
+<!--<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="problemsView()" *ngIf="!viewInfo.showProblemsView">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title *ngIf="viewInfo.showProblemsView" style="text-align: center;">Problems</ion-title>
+        <ion-title *ngIf="!viewInfo.showProblemsView">Problem Details</ion-title>
+        <ion-buttons slot="end">
+            <ion-button color="primary" (click)="newProblemView()" *ngIf="viewInfo.showProblemsView">
+                Create Problem
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>-->
+<ion-header *ngIf="!viewInfo.showProblemsView">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="problemsView()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title *ngIf="!viewInfo.showProblemsView">Problem Details</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-button color="primary" size="small" (click)="newProblemView()" *ngIf="viewInfo.showProblemsView">
+        Create Problem
+    </ion-button>
+    <ion-card *ngFor="let problem of problems;let idx = index" style="color: black;" (click)="openProblem(problem)"
+              [hidden]="!viewInfo.showProblemsView"
+              [ngStyle]="{'margin-bottom': idx + 1 == problems.length && viewInfo.showProblemsView ? '50px' : '' }">
+        <ion-card-content style="padding: 3px;">
+            <ion-row style="width: 100%;">
+                <ion-col size="12">
+                    <span style="color: blue;">{{problem?.title}}</span>
+                </ion-col>
+            </ion-row>
+            <ion-row style="width: 100%;">
+                <ion-col size="6">
+                    <span style="color: #178e17;">Priority</span><br>
+                    <span>{{problem?.priority}}</span>
+                </ion-col>
+                <ion-col size="6">
+                    <span style="color: #178e17;">Reported By</span><br>
+                    <span>{{problem?.createdBy}}</span>
+                </ion-col>
+            </ion-row>
+        </ion-card-content>
+    </ion-card>
+    <p *ngIf="problems?.length == 0" style="padding: 10px;"> No Problems found</p>
+
+    <!-------------------------------------------------------------------------------------------------------------------
+        ----------------------------------------  Details View --------------------------------------------------------------->
+
+    <div id="problemDetails" [hidden]="viewInfo.showProblemsView" style="overflow-y: auto;">
+        <div *ngIf="tabName == 'details'" style="padding-bottom: 50px;">
+            <ion-card style="color: black;">
+                <ion-card-content style="padding: 20px 10px">
+                    <ion-row style="width: 100%">
+                        <ion-col size="12">
+                            <span style="color: #178e17;">Title :</span> {{problem?.title}}
+                        </ion-col>
+                    </ion-row>
+                    <ion-row style="width: 100%">
+                        <ion-col size="12">
+                            <span style="color: #178e17;">Description :</span> {{problem?.description}}
+                        </ion-col>
+                    </ion-row>
+                    <ion-row style="width: 100%">
+                        <ion-col size="12">
+                            <span style="color: #178e17;">Type :</span> {{problem?.type}}
+                        </ion-col>
+                    </ion-row>
+                    <ion-row style="width: 100%">
+                        <ion-col size="12">
+                            <span style="color: #178e17;">Priority :</span> {{problem?.priority}}
+                        </ion-col>
+                    </ion-row>
+                    <ion-row style="width: 100%">
+                        <ion-col size="12">
+                            <span style="color: #178e17;">Status :</span> {{problem?.status}}
+                        </ion-col>
+                    </ion-row>
+                    <ion-row style="width: 100%">
+                        <ion-col size="12">
+                            <span style="color: #178e17;">Assigned To :</span> {{problem?.assignedTo}}
+                        </ion-col>
+                    </ion-row>
+                </ion-card-content>
+            </ion-card>
+        </div>
+
+        <!------------------------------------------  Media --------------------------------------------->
+
+        <div *ngIf="tabName == 'media'" style="padding-bottom: 50px;">
+            <ion-card *ngFor="let media of media" style="padding: 5px;color: black;">
+                <ion-card-content style="padding: 0 !important;">
+                    <ion-img [src]="media.src"></ion-img>
+                </ion-card-content>
+            </ion-card>
+            <p *ngIf="media?.length == 0" style="padding: 10px;"> No Media found</p>
+        </div>
+    </div>
+
+
+    <!-----------------------------------------------------------------------------------------------------------------
+    -------------------------------------------------  Footer ---------------------------------------------------------->
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" [hidden]="!viewInfo.showProblemsIcons"
+             style="background-color: white;text-align: right;width: 100%;margin-bottom: 40px;">
+        <ion-icon name="camera" style="font-size: 30px;" (click)="takePicture()"></ion-icon>
+    </ion-fab>
+    <div [hidden]="viewInfo.showProblemsView" id="tabs">
+        <ion-tab-bar slot="bottom">
+            <ion-tab-button [ngStyle]="{'color':tabName === 'details' ? 'blueviolet' : 'black' }"
+                            (click)="showProblemDetails()">
+                <ion-icon name="calendar"></ion-icon>
+                <ion-label>Details</ion-label>
+            </ion-tab-button>
+
+            <ion-tab-button [ngStyle]="{'color':tabName === 'media' ? 'blueviolet' : 'black' }"
+                            (click)="showProblemMedia()">
+                <ion-icon name="map"></ion-icon>
+                <ion-label>Media</ion-label>
+                <ion-badge>{{problem?.media}}</ion-badge>
+            </ion-tab-button>
+        </ion-tab-bar>
+    </div>
+    <div id="new-problem" class="problem modal">
+        <div class="problem-content">
+            <div id="details-header" style="border-bottom: 1px solid lightgrey;">
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-button (click)="hideProblem()">
+                            <ion-icon name="arrow-back"></ion-icon>
+                        </ion-button>
+                    </ion-buttons>
+                    <ion-title style="margin: 0;text-align: center;padding: 0;">
+                        New Problem
+                    </ion-title>
+                </ion-toolbar>
+            </div>
+            <div id="details-content" style="padding: 10px;">
+                <h6 *ngIf="hasError" style="color: red;border: 1px solid red;padding: 3px;text-align: center;">
+                    {{errorMessage}}</h6>
+                <ion-item>
+                    <ion-label position="stacked">Type</ion-label>
+                    <ion-select placeholder="Select Type" [(ngModel)]="newProblem.type">
+                        <ion-select-option *ngFor="let type of types" [value]="type">{{type.label}}</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="stacked">Title</ion-label>
+                    <ion-input type="text" [(ngModel)]="newProblem.title" placeholder="Enter Title"></ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="stacked">Priority</ion-label>
+                    <ion-select placeholder="Select Priority" [(ngModel)]="newProblem.priority">
+                        <ion-select-option *ngFor="let priority of priorities">{{priority}}</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="stacked">Assigned To</ion-label>
+                    <ion-select placeholder="Select Person" [(ngModel)]="newProblem.assignedTo">
+                        <ion-select-option *ngFor="let person of projectPersons" [value]="person">{{person.fullName}}
+                        </ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="stacked">Description</ion-label>
+                    <ion-textarea rows="6" [(ngModel)]="newProblem.description"
+                                  placeholder="Enter Description"></ion-textarea>
+                </ion-item>
+                <ion-item>
+                    <ion-button color="primary" size="small"
+                                (click)="createProblem()">
+                        Create
+                    </ion-button>
+                </ion-item>
+            </div>
+        </div>
+    </div>
+</ion-content>
+

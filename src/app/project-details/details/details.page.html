@@ -1,0 +1,46 @@
+<ion-card style="color: black;">
+    <ion-card-content style="padding: 20px 10px">
+        <ion-row style="width: 100%">
+            <ion-col size="12">
+                <span style="color: #178e17;">Description :</span> {{project?.description}}
+            </ion-col>
+        </ion-row>
+        <ion-row style="width: 100%">
+            <ion-col size="9">
+                <span style="color: #178e17;">Project Owner :</span><span> {{project?.assignedTo}}</span>
+                <br>
+                <span style="color: #178e17;">Phone Number :</span><span> {{project?.phoneNumber}}</span>
+                <ion-icon name="call" style="font-size:18px;padding-left:5px;margin-bottom: -4px;"
+                          (click)="callToNumber(project?.phoneNumber)"></ion-icon>
+            </ion-col>
+            <ion-col size="3" style="text-align: center;">
+                <ion-icon name="person-circle-outline" style="font-size: 50px;"></ion-icon>
+            </ion-col>
+        </ion-row>
+        <ion-row style="width: 100%;">
+            <ion-col size="12">
+                <p>
+                    <span style="font-size: 10px;">Completed</span>
+                    <span style="float: right">{{project?.percentComplete}}%</span>
+                </p>
+
+                <div style="width: 100%;border-radius: 10px;background: lightgrey;">
+                    <div class="projectDetail-percent" id="project{{project?.id}}"></div>
+                </div>
+            </ion-col>
+        </ion-row>
+        <ion-row style="width: 100%">
+            <ion-col size="12">
+                <p><span style="color: #178e17;">Planned Date</span> : <span>{{project?.plannedStartDate}} - {{project?.plannedFinishDate}}</span>
+                </p>
+            </ion-col>
+        </ion-row>
+        <ion-row *ngIf="project?.actualStartDate != null" style="width: 100%">
+            <ion-col size="12">
+                <p><span style="color:#178e17;">Start Date</span> : <span>{{project?.actualStartDate}} - {{project?.actualFinishDate}}</span>
+                </p>
+            </ion-col>
+        </ion-row>
+    </ion-card-content>
+</ion-card>
+

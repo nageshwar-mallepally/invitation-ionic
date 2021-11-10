@@ -1,0 +1,43 @@
+.problem-tabs {
+  display: flex;
+  overflow-x: auto;
+  width: auto;
+}
+
+.problem-tab {
+  color: #e4d6d6;
+  font-size: 14px;
+  padding: 5px 10px;
+}
+
+.active-tab {
+  color: white !important;
+  border-bottom: 2px solid white;
+}
+
+.problemImageUpload.modal {
+  display: none;
+  position: fixed; /* Stay in place */
+  z-index: 1000;
+  /*padding-top: 50px; /!* Location of the box *!/*/
+  left: 0;
+  top: 0;
+  margin: auto;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  /*overflow: auto; /!* Enable scroll if needed *!/*/
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.problemImageUpload .problemImage-content {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: 90%;
+  height: 70%;
+  margin-top: 25%;
+  background: white;
+  border: 1px solid lightgrey;
+  /*max-width: 70%;*/
+}

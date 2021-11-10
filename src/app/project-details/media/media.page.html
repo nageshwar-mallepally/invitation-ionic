@@ -1,0 +1,13 @@
+<!--<ion-header>
+    <ion-toolbar>
+        <ion-title *ngIf="viewInfo.showProblemsView" style="text-align: center;">Media</ion-title>
+    </ion-toolbar>
+</ion-header>-->
+<ion-content>
+    <ion-card *ngFor="let media of media" style="padding: 5px;color: black;">
+        <ion-card-content style="padding: 0 !important;">
+            <ion-img [src]="media.src"></ion-img>
+        </ion-card-content>
+    </ion-card>
+    <p *ngIf="media?.length == 0" style="padding: 10px;"> No Media found</p>
+</ion-content>

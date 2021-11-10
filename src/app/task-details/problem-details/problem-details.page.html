@@ -1,0 +1,83 @@
+<div id="problemDetails-heading"
+     style="background-color: #178e17;box-shadow: 0 0 0 rgba(0, 0, 0, 0.16), 0 1px 6px rgba(0, 0, 0, 0.22);">
+    <div style="display: flex;width: 100%;padding: 5px;">
+        <ion-icon name="arrow-back" (click)="back()" style="font-size: 20px;color: white;padding: 5px;"></ion-icon>
+        <span style="color: white;padding: 5px;font-size: 16px;">{{problem?.title}}</span>
+    </div>
+    <div class="problem-tabs">
+        <div id="problem-details" class="problem-tab" [ngClass]="{'active-tab': problemTabName == 'problem-details'}"
+             (click)="selectProblemTab('problem-details')">DETAILS
+        </div>
+        <div id="problem-media" class="problem-tab" [ngClass]="{'active-tab': problemTabName == 'problem-media'}"
+             (click)="selectProblemTab('problem-media')">MEDIA
+        </div>
+    </div>
+</div>
+
+<div id="problemDetails-content" style="overflow-y: auto;background-color: lightgrey;">
+    <div *ngIf="problemTabName == 'problem-details'">
+        <ion-card style="color: black;">
+            <ion-card-content style="padding: 20px 10px">
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Title :</span> {{problem?.title}}
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Description :</span> {{problem?.description}}
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Type :</span> {{problem?.type}}
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Priority :</span> {{problem?.priority}}
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Status :</span> {{problem?.status}}
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Assigned To :</span> {{problem?.assignedTo}}
+                    </ion-col>
+                </ion-row>
+            </ion-card-content>
+        </ion-card>
+    </div>
+    <div *ngIf="problemTabName == 'problem-media'" style="padding-bottom: 50px;">
+        <ion-icon name="camera" style="font-size: 26px;padding: 10px;" (click)="takePicture('camera')"></ion-icon>
+        <ion-icon name="image" style="font-size: 26px;padding: 10px;" (click)="takePicture('gallery')"></ion-icon>
+
+        <ion-card *ngFor="let media of media" style="padding: 5px;color: black;">
+            <ion-card-content style="padding: 0 !important;">
+                <ion-img [src]="media.src"></ion-img>
+                <ion-label>{{media.description}}</ion-label>
+            </ion-card-content>
+        </ion-card>
+
+        <p *ngIf="media?.length == 0" style="padding: 10px;"> No Media found</p>
+    </div>
+</div>
+
+<div id="problemImage-dialog" class="problemImageUpload modal">
+    <div class="problemImage-content">
+        <div id="problemPhoto-content">
+            <div id="problemImages-view" style="overflow-y: auto;">
+                <img src="{{selectedImage}}" *ngIf="selectedImage != null" style="width: auto;max-height: 70%;">
+                <ion-textarea rows="3" [(ngModel)]="selectedImageDescription"
+                              placeholder="Enter Description"></ion-textarea>
+            </div>
+            <div id="problemImage-footer" style="width: 100%;display: flex;border-top: 1px solid lightgrey;">
+                <ion-button color="primary" size="small" (click)="uploadImage()">Upload</ion-button>
+                <ion-button color="danger" size="small" (click)="cancelImage()">Cancel</ion-button>
+            </div>
+        </div>
+    </div>
+</div>

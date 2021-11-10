@@ -1,0 +1,89 @@
+<div id="task-heading"
+     style="background-color: #178e17;box-shadow: 0 0 0 rgba(0, 0, 0, 0.16), 0 1px 6px rgba(0, 0, 0, 0.22);">
+    <div style="display: flex;width: 100%;padding: 5px;">
+        <ion-icon name="arrow-back" (click)="back()" style="font-size: 18px;color: white;padding: 5px;"></ion-icon>
+        <span style="color: white;padding: 5px;font-size: 14px;">New Task</span>
+    </div>
+</div>
+<div id="task-content" style="overflow-y: auto;background-color: lightgrey;">
+    <ion-card>
+        <ion-card-content style="padding: 0;">
+            <ion-item>
+                <ion-label position="stacked">Name *</ion-label>
+                <ion-input type="text" [(ngModel)]="newTask.name" placeholder="Enter Task Name"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Description</ion-label>
+                <ion-textarea rows="6" [(ngModel)]="newTask.description"
+                              placeholder="Enter Description"></ion-textarea>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Site *</ion-label>
+                <ion-select placeholder="Select Site" [(ngModel)]="newTask.siteObject" (ionChange)="selectSite($event)">
+                    <ion-select-option *ngFor="let site of projectSites" [value]="site">{{site.name}}
+                    </ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item *ngIf="showNewSiteView">
+                <ion-label position="stacked">Site Name *</ion-label>
+                <ion-input type="text" [(ngModel)]="newSite.name" placeholder="Enter Site Name"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="showNewSiteView">
+                <ion-label position="stacked">Site Description</ion-label>
+                <ion-textarea rows="6" [(ngModel)]="newSite.description"
+                              placeholder="Enter Description"></ion-textarea>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">WBS *</ion-label>
+                <ion-select placeholder="Select WBS" [(ngModel)]="newTask.wbsItemObject"
+                            (ionChange)="selectWbs($event)">
+                    <ion-select-option *ngFor="let wbs of projectWbs" [value]="wbs">{{wbs.name}}
+                    </ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Assigned To *</ion-label>
+                <ion-select placeholder="Select Person" [(ngModel)]="newTask.personObject">
+                    <ion-select-option *ngFor="let person of projectPersons" [value]="person">
+                        {{person.fullName}}
+                    </ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Unit of Work *</ion-label>
+                <ion-input type="text" [(ngModel)]="newTask.unitOfWork"
+                           placeholder="Enter Work Units"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Total Units *</ion-label>
+                <ion-input type="number" [(ngModel)]="newTask.totalUnits"
+                           placeholder="Enter Total Units"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label position="stacked">Inspection By</ion-label>
+                <ion-select placeholder="Select Inspection Person" [(ngModel)]="newTask.inspectedByObject">
+                    <ion-select-option *ngFor="let person of projectPersons" [value]="person">
+                        {{person.fullName}}
+                    </ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Planned Start Date *</ion-label>
+                <ion-input [(ngModel)]="newTask.plannedStartDate"
+                           placeholder="Select Start Date" (click)="selectPlannedStartDate()"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Planned Finish Date *</ion-label>
+                <ion-input [(ngModel)]="newTask.plannedFinishDate" (click)="selectPlannedFinishDate()"
+                           placeholder="Select Finish Date"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-button color="success" size="small"
+                            (click)="createTask()">
+                    Create
+                </ion-button>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+</div>

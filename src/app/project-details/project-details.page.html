@@ -1,0 +1,103 @@
+<ion-app>
+    <ion-header id="project-header">
+        <ion-toolbar>
+            <ion-buttons slot="start">
+                <ion-menu-button></ion-menu-button>
+            </ion-buttons>
+            <span style="font-size: 12px;font-weight: 500;">{{project?.name}}</span><br>
+            <span style="font-size: 20px;color: mediumblue;">{{tabsTitle}}</span>
+        </ion-toolbar>
+    </ion-header>
+    <ion-content>
+        <ion-split-pane contentId="project-content">
+            <ion-menu contentId="project-content">
+                <ion-content>
+                    <ion-list>
+                        <ion-menu-toggle>
+                            <ion-item (click)="showDetails()">
+                                <ion-icon name="calendar"></ion-icon>
+                                <ion-label>Details</ion-label>
+                            </ion-item>
+                            <ion-item (click)="showSites()">
+                                <ion-icon name="calendar"></ion-icon>
+                                <ion-label>Sites</ion-label>
+                            </ion-item>
+                            <ion-item (click)="showTasks()">
+                                <ion-icon name="calendar"></ion-icon>
+                                <ion-label>Tasks</ion-label>
+                            </ion-item>
+                            <ion-item (click)="showMedia()">
+                                <ion-icon name="calendar"></ion-icon>
+                                <ion-label>Files</ion-label>
+                            </ion-item>
+                            <ion-item (click)="showMedia()">
+                                <ion-icon name="calendar"></ion-icon>
+                                <ion-label>Media</ion-label>
+                            </ion-item>
+                            <ion-item (click)="showProblems()">
+                                <ion-icon name="calendar"></ion-icon>
+                                <ion-label>Problems</ion-label>
+                            </ion-item>
+                        </ion-menu-toggle>
+                    </ion-list>
+                </ion-content>
+            </ion-menu>
+            <ion-router-outlet id="project-content"></ion-router-outlet>
+        </ion-split-pane>
+        <ion-fab vertical="bottom" horizontal="end" slot="fixed" [hidden]="!viewInfo.showProjectIcons" id="projectIcons"
+                 style="background-color: white;text-align: right;width: 100%;margin-bottom: -10px;">
+            <ion-icon name="chatbubble-ellipses-sharp" style="font-size: 30px;padding: 0 5px;"
+                      (click)="showComments()">
+            </ion-icon>
+            <!--<ion-icon name="attach" style="font-size: 30px;padding: 0 5px;" (click)="openFileSystem()"></ion-icon>-->
+            <!--<ion-icon name="camera" style="font-size: 30px;" (click)="selectImage()"></ion-icon>-->
+            <!--<ion-button size="small" fill="clear" style="padding: 0;margin: 0;" (click)="selectImage()">
+
+            </ion-button>-->
+        </ion-fab>
+        <div id="project-comments" class="details modal">
+            <div class="modal-content">
+                <div id="details-header" style="background: lightgrey;padding: 5px">
+                    <h4 style="margin: 0;text-align: center;">
+                        Comments
+                        <ion-icon name="close-circle-outline" (click)="hideHistory()" style="float: right;"></ion-icon>
+                    </h4>
+                </div>
+                <div id="details-content">
+                    <div id="comments" style="overflow-y: auto;">
+                        <p *ngIf="comments?.content?.length == 0">No comments</p>
+
+                        <div class="comment-container" *ngFor="let comment of comments?.content"
+                             [ngStyle]="{'float':viewInfo.loginDetails.person.id === comment.commentedBy.id ? 'right' : 'left' }">
+                            <div class="comment-info">
+                                <div class="comment-user">
+                                    <span>{{comment.commentedBy.fullName}}</span>
+                                </div>
+                                <div class="comment-timestamp">
+                                    <span>{{comment.commentedDate}}</span>
+                                </div>
+                            </div>
+                            <div class="comment-text">
+
+                            <span style="white-space: normal;word-wrap: break-word;">
+                                <div style="-webkit-column-width: 250px;-moz-column-width: 250px;column-width: 250px;column-count: 1;">
+                                    {{comment.comment}}
+                                </div>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="footer" style="width: 100%;display: flex;border-top: 1px solid lightgrey;">
+                        <div style="width: 85%;">
+                            <ion-input type="text" [(ngModel)]="emptyComment.comment"
+                                       placeholder="Enter Comments"></ion-input>
+                        </div>
+                        <div style="width: 25%">
+                            <ion-button (click)="createComment()">Send</ion-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-app>

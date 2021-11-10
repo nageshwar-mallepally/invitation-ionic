@@ -1,0 +1,38 @@
+.site-tabs {
+  display: flex;
+  overflow-x: auto;
+  width: auto;
+}
+
+.site-tab {
+  color: #e4d6d6;
+  font-size: 12px;
+  padding: 5px 10px;
+}
+
+.active-tab {
+  color: white !important;
+  border-bottom: 2px solid white;
+}
+
+.site-percent {
+  background: #007bff !important;
+  border-radius: 100px;
+  height: 10px;
+  p {
+    text-align: center;
+    color: white !important;
+    font-size: 12px;
+  }
+}
+
+.siteTask-percent {
+  background: #007bff !important;
+  border-radius: 100px;
+  height: 10px;
+  p {
+    text-align: center;
+    color: white !important;
+    font-size: 12px;
+  }
+}

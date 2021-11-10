@@ -1,0 +1,36 @@
+<style>
+  .backgroundImage {
+    /*background-image: url("../assets/logo_dawath.jpg");*/
+    background: #181831;
+    height: 100%;
+    margin-top: -10px;
+  }
+</style>
+<ion-content>
+  <div class="backgroundImage">
+    <ion-card style="top: 20%;height: 350px;background-image: url('../assets/logo_invite.jpg');">
+      <!--<ion-img style="height:80px;padding: 5px;"></ion-img>-->
+      <ion-card-content style="top:26%;opacity: 0.6;">
+        <p *ngIf="hasError" style="color: red;text-align: center;">{{errorMessage}}</p>
+        <ion-item>
+          <ion-icon name="person" style="color: black;"></ion-icon>
+          <ion-input type="text" placeholder="Username" name="UserName"
+                     [(ngModel)]="loginDto.login.loginName"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon name="lock-closed-sharp"></ion-icon>
+          <ion-input type="password" placeholder="Password" name="Password"
+                     [(ngModel)]="loginDto.login.password"></ion-input>
+        </ion-item>
+        <ion-item style="float: right;">
+          <ion-button size="small" color="primary" (click)="performIonicHttpLogin()">Native Login</ion-button>
+          <ion-button size="small" color="primary" (click)="performLogin()">SIGN IN</ion-button>
+        </ion-item>
+        <div class="row" *ngIf="loggingIn">
+          <span style="font-weight: 600;">Logging In... Please Wait</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

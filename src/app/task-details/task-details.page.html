@@ -1,0 +1,222 @@
+<div id="taskDetails-heading"
+     style="background-color: #178e17;box-shadow: 0 0 0 rgba(0, 0, 0, 0.16), 0 1px 6px rgba(0, 0, 0, 0.22);">
+    <div style="display: flex;width: 100%;padding: 5px;">
+        <ion-icon name="arrow-back" (click)="back()" style="font-size: 20px;color: white;padding: 5px;"></ion-icon>
+        <span style="color: white;padding: 5px;font-size: 14px;">{{task?.name}}</span>
+    </div>
+    <div class="task-tabs">
+        <div id="task-details" class="task-tab" [ngClass]="{'active-tab': taskTabName == 'task-details'}"
+             (click)="selectTaskTab('task-details')">DETAILS
+        </div>
+        <div id="task-files" class="task-tab" [ngClass]="{'active-tab': taskTabName == 'task-files'}"
+             (click)="selectTaskTab('task-files')">FILES
+        </div>
+        <div id="task-media" class="task-tab" [ngClass]="{'active-tab': taskTabName == 'task-media'}"
+             (click)="selectTaskTab('task-media')">MEDIA
+        </div>
+        <div id="task-problems" class="task-tab" [ngClass]="{'active-tab': taskTabName == 'task-problems'}"
+             (click)="selectTaskTab('task-problems')">PROBLEMS
+        </div>
+    </div>
+</div>
+
+<div id="taskDetails-content" style="overflow-y: auto;background-color: lightgrey;">
+    <div *ngIf="taskTabName == 'task-details'" style="height: 100%;overflow-y: auto;padding-bottom: 50px;">
+        <ion-card style="color: black;">
+            <ion-card-content style="padding: 20px 10px">
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Task :</span> {{task?.name}}
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Description :</span> {{task?.description}}
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="9">
+                        <span style="color: #178e17;">Assigned To :</span><span> {{task?.assignedTo}}</span>
+                        <br>
+                        <span style="color: #178e17;">Phone Number :</span><span> {{task?.assignedToNumber}}</span>
+                        <ion-icon name="call" style="font-size:18px;padding-left:10px;padding-top: 5px;"
+                                  (click)="callToNumber(task?.assignedToNumber)"></ion-icon>
+                    </ion-col>
+                    <ion-col size="3" style="text-align: center;">
+                        <ion-icon name="person-circle-outline" style="font-size: 50px;"></ion-icon>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%;">
+                    <ion-col size="12">
+                        <p>
+                            <span style="font-size: 10px;">Completed</span>
+                            <span style="float: right">{{task?.percentComplete}}%</span>
+                        </p>
+
+                        <div style="width: 100%;border-radius: 10px;background: lightgrey;">
+                            <div class="task-percent" id="task{{task?.id}}"></div>
+                        </div>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <p><span style="color: #178e17;">Planned Date</span> : <span>{{task?.plannedStartDate}} - {{task?.plannedFinishDate}}</span>
+                        </p>
+                    </ion-col>
+                </ion-row>
+                <ion-row *ngIf="task?.actualStartDate != null" style="width: 100%">
+                    <ion-col size="12">
+                        <p><span style="color:#178e17;">Start Date</span> : <span>{{task?.actualStartDate}} - {{task?.actualFinishDate}}</span>
+                        </p>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <p><span style="color:#178e17;">Unit of Work</span> : <span>{{task?.unitOfWork}}</span>
+                        </p>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <p><span style="color:#178e17;">Total Units</span> : <span>{{task?.totalUnits}}</span>
+                        </p>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <p><span style="color:#178e17;">Units Completed</span> : <span>{{task?.totalUnitsCompleted}} {{task?.unitOfWork}}</span>
+                        </p>
+                    </ion-col>
+                </ion-row>
+                <ion-icon name="add-circle" *ngIf="!showNewCompletion" (click)="showNewCompletionView()"
+                          style="font-size: 26px;"></ion-icon>
+                <ion-icon name="remove-circle" *ngIf="showNewCompletion" (click)="showNewCompletionView()"
+                          style="font-size: 26px;"></ion-icon>
+
+                <div *ngIf="showNewCompletion" style="border: 1px solid lightgrey;">
+                    <ion-item>
+                        <ion-label position="stacked">Units Completed *</ion-label>
+                        <ion-input type="number" [(ngModel)]="completion.unitsCompleted"
+                                   placeholder="Enter Units Completed"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">Notes</ion-label>
+                        <ion-input type="text" [(ngModel)]="completion.notes" placeholder="Enter Notes"></ion-input>
+                    </ion-item>
+                    <ion-button color="primary" size="small" (click)="save()">Save</ion-button>
+                </div>
+            </ion-card-content>
+        </ion-card>
+
+        <ion-card *ngIf="taskCompletionHistories?.length > 0">
+            <ion-item style="font-weight: bold;">
+                Task Completion History
+            </ion-item>
+            <ion-card-content>
+                <div>
+                    <ul class="timeline">
+                        <li *ngFor="let history of taskCompletionHistories">
+                            <div class="direction-r">
+                                <div class="flag-wrapper">
+                                    <span class="flag"
+                                          style="color: black;">{{history?.unitsCompleted}} {{task?.unitOfWork}}
+                                    </span>
+                                    <span class="time-wrapper">
+                                        <span class="time"><span style="color: #178e17;">Completed By</span> :  {{history?.completedPerson?.fullName}}</span>
+                                    </span>
+                                </div>
+                                <div class="desc">
+                                    <span style="color: #178e17;">Completed On:<span style="color: blue;">{{history?.timeStamp}}</span></span><br>
+                                    <span style="color: #178e17;">Notes:<span
+                                            style="color: black;">{{history?.notes}}</span></span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </ion-card-content>
+        </ion-card>
+    </div>
+
+    <!--------------------------------------------  Files ------------------------------------------>
+
+    <div *ngIf="taskTabName == 'task-files'" style="overflow-y:auto;height:100%;padding-bottom: 50px;">
+        <ion-icon name="attach" style="font-size: 30px;padding: 0 5px;" (click)="openFileSystem()"></ion-icon>
+        <ion-card *ngFor="let file of files" style="color: black;">
+            <ion-card-content style="padding: 0 !important;">
+                <ion-row style="width: 100%;">
+                    <ion-col size="12">
+                        <span style="font-size: 12px;color: #178e17;">File Name</span><br>
+                        <span style="font-weight: 500;font-size: 12px;">{{file?.name}}</span>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="6">
+                        <span style="font-size: 12px;color: #178e17;">Uploaded By</span><br>
+                        <span style="font-weight: 500;font-size: 12px;">{{file?.uploadedBy}}</span>
+                    </ion-col>
+                    <ion-col size="6">
+                        <span style="font-size: 12px;color: #178e17;">Uploaded Date</span><br>
+                        <span style="font-weight: 500;font-size: 12px;">{{file?.createdDate}}</span>
+                    </ion-col>
+                </ion-row>
+            </ion-card-content>
+        </ion-card>
+        <p *ngIf="files?.length == 0" style="padding: 10px;"> No Files found</p>
+    </div>
+
+    <!------------------------------------------  Media --------------------------------------------->
+
+    <div *ngIf="taskTabName == 'task-media'" style="height:100%;overflow-y:auto;padding-bottom: 50px;">
+        <ion-icon name="camera" style="font-size: 26px" (click)="takePicture('camera')"></ion-icon>
+        <ion-icon name="image" style="font-size: 26px" (click)="takePicture('gallery')"></ion-icon>
+        <ion-card *ngFor="let media of media" style="padding: 5px;color: black;">
+            <ion-card-content style="padding: 0 !important;">
+                <ion-img [src]="media.src"></ion-img>
+                <ion-label>{{media.description}}</ion-label>
+            </ion-card-content>
+        </ion-card>
+        <p *ngIf="media?.length == 0" style="padding: 10px;"> No Media found</p>
+    </div>
+    <!------------------------------------------  Problems --------------------------------------------->
+
+    <div *ngIf="taskTabName == 'task-problems'" style="height:100%;overflow-y:auto;padding-bottom: 50px;">
+        <ion-button color="primary" size="small" (click)="newTaskProblem()">New Problem</ion-button>
+        <ion-card *ngFor="let problem of problems" style="color: black;" (click)="openProblem(problem)">
+            <ion-card-content>
+                <ion-row style="width: 100%;">
+                    <ion-col size="12">
+                        <span style="font-weight: 500;color: blue;">{{problem?.title}}</span>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%;">
+                    <ion-col size="6">
+                        <span style="font-size: 12px;color: #178e17;">Priority</span><br>
+                        <span style="font-weight: 500;font-size: 12px;">{{problem?.priority}}</span>
+                    </ion-col>
+                    <ion-col size="6">
+                        <span style="font-size: 12px;color: #178e17;">Reported By</span><br>
+                        <span style="font-weight: 500;font-size: 12px;">{{problem?.reportedBy}}</span>
+                    </ion-col>
+                </ion-row>
+            </ion-card-content>
+        </ion-card>
+        <p *ngIf="problems?.length == 0" style="padding: 10px;"> No Problems found</p>
+    </div>
+</div>
+
+<div id="image-dialog" class="imageUpload modal">
+    <div class="image-content">
+        <div id="photo-content">
+            <div id="images-view" style="overflow-y: auto;">
+                <img src="{{selectedImage}}" *ngIf="selectedImage != null" style="width: auto;max-height: 70%;">
+                <ion-textarea rows="3" [(ngModel)]="selectedImageDescription"
+                              placeholder="Enter Description"></ion-textarea>
+            </div>
+            <div id="image-footer" style="width: 100%;display: flex;border-top: 1px solid lightgrey;">
+                <ion-button (click)="uploadImage(selectedFile)">Upload</ion-button>
+                <ion-button color="danger" size="small" (click)="cancelImage()">Cancel</ion-button>
+            </div>
+        </div>
+    </div>
+</div>

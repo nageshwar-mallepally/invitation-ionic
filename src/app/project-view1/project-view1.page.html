@@ -1,0 +1,285 @@
+<div id="details-heading"
+     style="background-color: #178e17;box-shadow: 0 0 0 rgba(0, 0, 0, 0.16), 0 1px 6px rgba(0, 0, 0, 0.22);padding: 2px">
+    <div style="display: flex;width: 100%;padding: 5px;">
+        <ion-icon id="backButton" name="arrow-back" (click)="back()"
+                  style="font-size: 18px;color: white;padding: 5px;"></ion-icon>
+        <span id="projectHeading" style="color: white;padding: 5px;font-size: 18px;">{{project?.name}}</span>
+        <ion-icon name="home" id="homeButton" (click)="home()"
+                  style="float:right;font-size: 18px;color: white;padding: 5px;"></ion-icon>
+    </div>
+    <div class="project-tabs">
+        <div id="project-details" class="project-tab" [ngClass]="{'active-tab': tabName == 'project-details'}"
+             (click)="selectTab('project-details')">DETAILS
+        </div>
+        <div id="project-sites" class="project-tab" [ngClass]="{'active-tab': tabName == 'project-sites'}"
+             (click)="selectTab('project-sites')">SITES
+        </div>
+        <div id="project-tasks" class="project-tab" [ngClass]="{'active-tab': tabName == 'project-tasks'}"
+             (click)="selectTab('project-tasks')">TASKS
+        </div>
+        <div id="project-files" class="project-tab" [ngClass]="{'active-tab': tabName == 'project-files'}"
+             (click)="selectTab('project-files')">FILES
+        </div>
+        <div id="project-media" class="project-tab" [ngClass]="{'active-tab': tabName == 'project-media'}"
+             (click)="selectTab('project-media')">MEDIA
+        </div>
+        <div id="project-problems" class="project-tab" [ngClass]="{'active-tab': tabName == 'project-problems'}"
+             (click)="selectTab('project-problems')">PROBLEMS
+        </div>
+    </div>
+</div>
+<div id="details-content" style="overflow-y: auto;background-color: lightgrey;">
+    <div *ngIf="tabName == 'project-details'" style="height: 100%;overflow-y: auto;" (swipe)="swipeEvent($event)">
+        <ion-card style="color: black;">
+            <ion-card-content style="padding: 20px 10px">
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Name :</span> {{project?.name}}
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Description :</span> {{project?.description}}
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="9">
+                        <span style="color: #178e17;">Project Owner :</span><span> {{project?.assignedTo}}</span>
+                        <br>
+                        <span style="color: #178e17;">Phone Number :</span><span> {{project?.phoneNumber}}</span>
+                        <ion-icon name="call" style="font-size:18px;padding-left:5px;margin-bottom: -4px;"
+                                  (click)="callToNumber(project?.phoneNumber)"></ion-icon>
+                    </ion-col>
+                    <ion-col size="3" style="text-align: center;">
+                        <ion-icon name="person-circle-outline" style="font-size: 50px;"></ion-icon>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%;">
+                    <ion-col size="12">
+                        <p>
+                            <span style="font-size: 10px;color: #178e17;">Completed</span>
+                            <span style="float: right">{{project?.percentComplete}}%</span>
+                        </p>
+
+                        <div style="width: 100%;border-radius: 10px;background: lightgrey;">
+                            <div class="project-percent" id="project{{project?.id}}"></div>
+                        </div>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <p><span style="color: #178e17;">Planned Date</span> : <span>{{project?.plannedStartDate}} - {{project?.plannedFinishDate}}</span>
+                        </p>
+                    </ion-col>
+                </ion-row>
+                <ion-row *ngIf="project?.actualStartDate != null" style="width: 100%">
+                    <ion-col size="12">
+                        <p><span style="color:#178e17;">Start Date</span> : <span>{{project?.actualStartDate}} - {{project?.actualFinishDate}}</span>
+                        </p>
+                    </ion-col>
+                </ion-row>
+            </ion-card-content>
+        </ion-card>
+    </div>
+
+    <div *ngIf="tabName == 'project-sites'" style="height: 100%;overflow-y: auto;" (swipe)="swipeEvent($event)">
+        <ion-card *ngFor="let site of sites?.content" style="color: black;"
+                  (click)="openSite(site)" [hidden]="showSiteDetails">
+            <ion-card-content style="padding: 0;">
+                <ion-row style="width: 100%">
+                    <ion-col size="9">
+                        <span style="color: #178e17;">Name :</span> {{site?.name}}
+                    </ion-col>
+                    <ion-col size="3">
+                        <span style="color: #178e17;">Tasks :</span> {{site?.totalTasks}}
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Description :</span> {{site?.description}}
+                    </ion-col>
+                </ion-row>
+            </ion-card-content>
+        </ion-card>
+        <p *ngIf="sites?.content.length == 0" style="padding: 10px;"> No Sites found</p>
+
+        <div *ngIf="showSiteDetails">
+
+        </div>
+    </div>
+
+    <div id="project-tasks" *ngIf="tabName == 'project-tasks'" style="height: 100%;overflow-y: auto;" (swipe)="swipeEvent($event)">
+        <ion-button color="primary" size="small" (click)="newTask()">New Task</ion-button>
+        <ion-card *ngFor="let task of tasks;let idx = index" style="color: black;">
+            <ion-card-content style="padding: 3px;">
+                <ion-row style="width: 100%;" (click)="openTask(task?.task)">
+                    <ion-col size="12" style="text-align: left;">
+                        <span style="font-weight: 500;color: blue;font-size: 12px;">{{task?.task.name}}</span>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Assigned To : </span><span>{{task?.assignedTo}}</span><br>
+                        <span style="color: #178e17;">Phone Number :</span><span> {{task?.phoneNumber}}</span>
+                        <ion-icon name="call" style="font-size:18px;padding-left:5px;margin-bottom: -4px;"
+                                  (click)="callToNumber(task?.phoneNumber)"></ion-icon>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <p>
+                            <span style="font-size: 10px;">Completed</span>
+                            <span style="float: right">{{task?.task.percentComplete}}%</span>
+                        </p>
+
+                        <div style="width: 100%;border-radius: 10px;background: lightgrey;">
+                            <div class="tasks-percent" id="tasks{{task?.task?.id}}"></div>
+                        </div>
+                    </ion-col>
+                </ion-row>
+            </ion-card-content>
+        </ion-card>
+        <p *ngIf="tasks?.length == 0" style="padding: 10px;"> No Tasks found</p>
+    </div>
+
+    <div *ngIf="tabName == 'project-media'" style="height: 100%;overflow-y: auto;" (swipe)="swipeEvent($event)">
+        <ion-card *ngFor="let media of media" style="padding: 5px;color: black;">
+            <ion-card-content style="padding: 0 !important;">
+                <ion-img [src]="media.src"></ion-img>
+                <ion-label>{{media.description}}</ion-label>
+            </ion-card-content>
+        </ion-card>
+        <p *ngIf="media?.length == 0" style="padding: 10px;"> No Media found</p>
+    </div>
+
+    <div *ngIf="tabName == 'project-files'" style="height: 100%;overflow-y: auto;" (swipe)="swipeEvent($event)">
+        <div style="width: 100%;display: flex">
+            <div style="width: auto%;">
+                <ion-button size="small" (click)="showFoldersView()" style="margin-top: 2px;margin-left: -3px;">
+                    <ion-icon name="chevron-forward"></ion-icon>
+                </ion-button>
+            </div>
+            <div style="width: 85%;display: flex;">
+                <h4 style="margin:2px 5px;width: 90%;">{{selectedFolder?.name}}</h4>
+                <ion-icon name="attach" style="font-size: 25px;" *ngIf="selectedFolder != null"
+                          (click)="openFileSystem()"></ion-icon>
+            </div>
+        </div>
+        <ion-card style="padding: 5px;color: black;" *ngFor="let file of files">
+            <ion-card-content style="padding: 0 !important;">
+                <ion-row style="width: 100%;">
+                    <ion-col size="6">
+                        <span style="color: #178e17;">Name</span><br>
+                        <ion-icon *ngIf="file?.type == 'FOLDER'" name="folder"></ion-icon>
+                        <span>{{file?.name}}</span>
+                    </ion-col>
+                    <ion-col size="6">
+                        <span style="color: #178e17;">Uploaded By</span><br>
+                        <span>{{file?.createdBy}}</span>
+                    </ion-col>
+                </ion-row>
+            </ion-card-content>
+        </ion-card>
+        <p *ngIf="files?.length == 0" style="padding: 10px;"> No Files found</p>
+    </div>
+
+    <div *ngIf="tabName == 'project-problems'" style="height: 100%;overflow-y: auto;" (swipe)="swipeEvent($event)">
+        <ion-button color="primary" size="small" (click)="newProblem()">New Problem</ion-button>
+        <ion-card *ngFor="let problem of problems" style="color: black;" (click)="openProblem(problem)">
+            <ion-card-content style="padding: 3px;">
+                <ion-row style="width: 100%;">
+                    <ion-col size="12">
+                        <span style="color: blue;">{{problem?.title}}</span>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%;">
+                    <ion-col size="6">
+                        <span style="color: #178e17;">Priority</span><br>
+                        <span>{{problem?.priority}}</span>
+                    </ion-col>
+                    <ion-col size="6">
+                        <span style="color: #178e17;">Reported By</span><br>
+                        <span>{{problem?.createdBy}}</span>
+                    </ion-col>
+                </ion-row>
+            </ion-card-content>
+        </ion-card>
+        <p *ngIf="problems?.length == 0" style="padding: 10px;"> No Problems found</p>
+    </div>
+
+    <div id="folders-view" class="foldersView modal">
+        <div class="folders-content">
+            <div id="folders-header" style="display: flex;background-color: #178e17;color:white;">
+                <div style="width: 75%">
+                    <p style="padding: 7px;margin: 0;">Folders</p>
+                </div>
+                <div style="width: 25%;text-align: right;">
+                    <ion-button size="small" (click)="hideFoldersView()" style="float: right;">
+                        <ion-icon name="chevron-back"></ion-icon>
+                    </ion-button>
+                </div>
+            </div>
+            <div id="folders-content" style="overflow-y: auto;">
+                <div *ngFor="let folder of folders" style="padding: 5px;">
+                    <p style="margin: 0;font-size: 14px;" class="level{{folder.level}}"
+                       [ngClass]="{'active-folder':selectedFolder?.id == folder?.id}"
+                       (click)="loadFolderFiles(folder)">
+                        <ion-icon name="folder"></ion-icon>
+                        {{folder.name}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="details-footer" style="box-shadow: 3px 0 3px 3px rgba(0, 0, 0, 0.16),3px 0 3px 3px rgba(0, 0, 0, 0.22);">
+    <ion-icon name="chatbubble-ellipses-sharp" style="font-size: 25px;padding: 0 5px;"
+              (click)="showCommentsView()">
+    </ion-icon>
+    <ion-icon name="camera" style="font-size: 25px;"></ion-icon>
+</div>
+<div id="project-comments" class="details modal">
+    <div class="modal-content">
+        <div id="comments-header" style="background-color: #178e17;padding: 5px;display: flex;">
+            <ion-icon name="arrow-back" (click)="hideHistory()"
+                      style="font-size: 18px;color: white;padding: 5px;"></ion-icon>
+            <span style="color: white;padding: 5px;font-size: 18px;">Comments</span>
+        </div>
+        <div id="comments-content" style="overflow-y: auto;">
+            <div id="comments" style="overflow-y: auto;">
+                <p *ngIf="comments?.content?.length == 0">No comments</p>
+
+                <div class="comment-container" *ngFor="let comment of comments?.content"
+                     [ngStyle]="{'float':viewInfo.loginDetails.person.id === comment.commentedBy.id ? 'right' : 'left' }">
+                    <div class="comment-info">
+                        <div class="comment-user">
+                            <span>{{comment.commentedBy.fullName}}</span>
+                        </div>
+                        <div class="comment-timestamp">
+                            <span>{{comment.commentedDate}}</span>
+                        </div>
+                    </div>
+                    <div class="comment-text">
+
+                            <span style="white-space: normal;word-wrap: break-word;">
+                                <div style="-webkit-column-width: 250px;-moz-column-width: 250px;column-width: 250px;column-count: 1;">
+                                    {{comment.comment}}
+                                </div>
+                            </span>
+                    </div>
+                </div>
+            </div>
+            <div id="footer" style="width: 100%;display: flex;border-top: 1px solid lightgrey;height: 40px;">
+                <div style="width: 100%;display: flex;">
+                    <ion-input type="text" [(ngModel)]="emptyComment.comment"
+                               placeholder="Enter Comments"></ion-input>
+                    <ion-icon name="send" (click)="createComment()" style="padding: 10px 0;font-size: 20px;"></ion-icon>
+                </div>
+                <!--<div style="width: 25%">
+                    <ion-button (click)="createComment()"></ion-button>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</div>

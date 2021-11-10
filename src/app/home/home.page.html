@@ -1,0 +1,131 @@
+<div id="home-heading"
+     style="background-color: #178e17;box-shadow: 0 0 0 rgba(0, 0, 0, 0.16), 0 1px 6px rgba(0, 0, 0, 0.22);padding: 2px;;">
+    <div style="width: 100%;padding: 5px;">
+        <span style="color: white;padding: 5px;font-size: 20px;">Invitation</span>
+        <ion-icon name="power" style="float: right;font-size: 20px;padding-right: 10px;color: white;"
+                  (click)="logout()"></ion-icon>
+    </div>
+</div>
+<div id="home-content" style="background-color: lightgrey;">
+    <ion-header *ngIf="true">
+        <ion-toolbar>
+            <ion-buttons slot="start">
+                <ion-button color="primary" size="small" (click)="addInvitation()" *ngIf="true">
+                    New Invitation
+                </ion-button>
+            </ion-buttons>
+            <!-- <ion-title style="padding: 0;">{{title}}</ion-title>-->
+        </ion-toolbar>
+    </ion-header>
+    <ion-content>
+        <ion-card *ngFor="let invitation of invitations?.content;let idx = index" style="color: black;"
+                  [ngStyle]="{'margin-bottom': idx + 1 == invitations.length ? '50px' : '' }">
+            <ion-card-content style="padding: 3px;">
+                <ion-row style="width: 100%;" (click)="openInvitation(invitation)">
+                    <ion-col size="12" style="text-align: left;">
+                        <span style="font-weight: 600;color: #091385;font-size: 19px;font-family: cursive;">{{invitation?.name}}</span>
+                        <span style="color: #ff4671;">   Show Details...</span><br>
+                    </ion-col>
+                    <ion-col size="12" style="text-align: left;">
+                        <span style="color: #178e17;">InvitedBy : </span><span>{{invitation?.invitedPerson?.firstName}}</span><br>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span>{{invitation?.dateTime}}</span><br>
+                        <span style="color: #178e17;">Phone Number :</span><span> {{invitation?.phoneNumber}}</span>
+                        <ion-icon name="call" style="font-size:18px;padding-left:5px;margin-bottom: -4px;"
+                                  (click)="callToNumber(invitation?.phoneMobile)"></ion-icon>
+                        <br>
+                        <span style="color: #178e17;">Email :</span><span> {{invitation?.email}}</span>
+                        <ion-icon name="mail" style="font-size:18px;padding-left:5px;margin-bottom: -4px;"
+                                  (click)="sendEmailTo(invitation?.email)"></ion-icon>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Address :</span><span> {{invitation?.address}}</span>
+                    </ion-col>
+                </ion-row>
+            </ion-card-content>
+        </ion-card>
+
+        <div id="new-invitation" class="invitation-problem modal">
+            <div class="invitation-problem-content">
+                <div id="new-invitation-header" style="border-bottom: 1px solid lightgrey;">
+                    <ion-toolbar>
+                        <ion-buttons slot="start">
+                            <ion-button (click)="hideNewInvitation()">
+                                <ion-icon name="arrow-back"></ion-icon>
+                            </ion-button>
+                        </ion-buttons>
+                        <ion-title style="margin: 0;padding: 0;">
+                            New invitation
+                        </ion-title>
+                    </ion-toolbar>
+                </div>
+                <div id="new-invitation-content" style="padding: 10px;overflow-y: auto;">
+                    <h6 *ngIf="hasError" style="color: red;border: 1px solid red;padding: 3px;text-align: center;">
+                        {{errorMessage}}</h6>
+                    <ion-item>
+                        <ion-label position="stacked">Name</ion-label>
+                        <ion-input type="text" [(ngModel)]="newInvitation.name"
+                                   placeholder="Enter Invitation Name"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">Information</ion-label>
+                        <ion-textarea rows="4" [(ngModel)]="newInvitation.information"
+                                      placeholder="Enter Information"></ion-textarea>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">Date and Time</ion-label>
+                        <ion-datetime [(ngModel)]="newInvitation.dateTime" displayFormat="hh:mm A DDDD, DD-MMMM-YYYY"
+                                      pickerFormat="YYYY-MMMM-DD  hh:mm A"></ion-datetime>
+                    </ion-item>
+
+                    <ion-item>
+                        <ion-label position="stacked">Mobile Number</ion-label>
+                        <ion-input type="text" [(ngModel)]="newInvitation.phoneNumber"
+                                   placeholder="Enter Mobile Number"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">Email</ion-label>
+                        <ion-input type="text" [(ngModel)]="newInvitation.email"
+                                   placeholder="Enter Email Address"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">Address</ion-label>
+                        <ion-textarea rows="4" [(ngModel)]="newInvitation.address"
+                                      placeholder="Enter Address"></ion-textarea>
+                    </ion-item>
+                    <ion-icon name="camera" style="font-size: 26px" (click)="takePicture('camera')"></ion-icon>
+                    <ion-icon name="image" style="font-size: 26px" (click)="takePicture('gallery')"></ion-icon>
+                    <!--<ion-icon name="camera" style="font-size: 30px;" (click)="takePicture()"></ion-icon>-->
+                    <!--<ion-item>
+                        <ion-label position="stacked">Site</ion-label>
+                        <ion-select placeholder="Select Site" [(ngModel)]="newInvitation.type">
+                            <ion-select-option *ngFor="let site of sites" [value]="site">{{site.name}}
+                            </ion-select-option>
+                        </ion-select>
+                    </ion-item>-->
+                    <ion-item>
+                        <ion-button color="primary" size="small"
+                                    (click)="createInvitation()">
+                            Create
+                        </ion-button>
+                    </ion-item>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</div>
+<!--<ion-header>
+    <ion-toolbar>
+        <ion-title>
+            Home
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+
+</ion-content>-->

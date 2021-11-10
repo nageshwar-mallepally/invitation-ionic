@@ -1,0 +1,48 @@
+<div id="projects-heading"
+     style="background-color: #178e17;box-shadow: 0 0 0 rgba(0, 0, 0, 0.16), 0 1px 6px rgba(0, 0, 0, 0.22);padding: 2px;">
+    <div style="display: flex;width: 100%;padding: 5px;">
+        <ion-icon name="arrow-back" id="back-button" (click)="back()"
+                  style="font-size: 18px;color: white;padding: 5px;"></ion-icon>
+        <span id="heading" style="color: white;padding: 5px;font-size: 20px;">{{invitation?.name}} Details</span>
+    </div>
+</div>
+<div id="projects-content" style="background-color: lightgrey;overflow-y: auto;">
+    <ion-card style="color: black;">
+        <ion-card-content style="padding: 3px;">
+            <ion-row style="width: 100%;">
+                <ion-col size="12">
+                    <p style="font-weight: 300;font-family: cursive;">{{invitation?.information}}</p>
+                </ion-col>
+            </ion-row>
+            <ion-row style="width: 100%">
+                <ion-col size="12">
+                    <span>{{invitation?.dateTime}}</span><br>
+                    <span style="color: #178e17;">Phone :</span><span> {{invitation?.phoneNumber}}</span>
+                    <ion-icon name="call" style="font-size:18px;padding-left:5px;margin-bottom: -4px;"
+                              (click)="callToNumber(invitation?.phoneMobile)"></ion-icon>
+                    <br>
+                    <span style="color: #178e17;">Email :</span><span> {{invitation?.email}}</span>
+                    <ion-icon name="mail" style="font-size:18px;padding-left:5px;margin-bottom: -4px;"
+                              (click)="sendEmailTo(invitation?.email)"></ion-icon>
+                </ion-col>
+            </ion-row>
+            <ion-row style="width: 100%">
+                <ion-col size="12" style="text-align: left;">
+                    <span>{{invitation?.invitedPerson?.firstName}}</span><br>
+                    <span> {{invitation?.address}}</span>
+                </ion-col>
+            </ion-row>
+            <ion-item>
+                <ion-button color="primary" size="small"
+                            (click)="getContacts()">
+                    Contacts
+                </ion-button>
+            </ion-item>
+            <ion-item *ngFor="let contact of allContacts" *ngIf="showContacts">
+                <ion-label position="stacked">Address</ion-label>
+                <ion-textarea rows="4" [(ngModel)]="newInvitation.address"
+                              placeholder="Enter Address"></ion-textarea>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+</div>

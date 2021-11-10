@@ -1,0 +1,414 @@
+<ion-app>
+    <ion-header *ngIf="!viewInfo.showTasksView">
+        <ion-toolbar>
+            <ion-buttons slot="start">
+                <ion-button (click)="tasksView()">
+                    <ion-icon name="arrow-back"></ion-icon>
+                </ion-button>
+            </ion-buttons>
+            <ion-title *ngIf="!viewInfo.showTasksView" style="padding: 0;">{{title}}</ion-title>
+        </ion-toolbar>
+    </ion-header>
+    <ion-content>
+        <ion-button color="primary" size="small" (click)="newTaskView()" *ngIf="viewInfo.showTasksView">
+            Create Task
+        </ion-button>
+        <ion-button color="primary" size="small" (click)="newProblemView()"
+                    *ngIf="!viewInfo.showTasksView && tabName == 'problems' && task?.status != 'FINISHED'">
+            Create Problem
+        </ion-button>
+        <ion-card *ngFor="let task of tasks;let idx = index" style="color: black;"
+                  [hidden]="!viewInfo.showTasksView"
+                  [ngStyle]="{'margin-bottom': idx + 1 == tasks.length && viewInfo.showTasksView ? '50px' : '' }">
+            <ion-card-content style="padding: 3px;">
+                <ion-row style="width: 100%;" (click)="openTask(task?.task)">
+                    <ion-col size="12" style="text-align: left;">
+                        <span style="font-weight: 500;color: blue;font-size: 12px;">{{task?.task.name}}</span>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Assigned To : </span><span>{{task?.assignedTo}}</span><br>
+                        <span style="color: #178e17;">Phone Number :</span><span> {{task?.phoneNumber}}</span>
+                        <ion-icon name="call" style="font-size:18px;padding-left:5px;margin-bottom: -4px;"
+                                  (click)="callToNumber(task?.phoneNumber)"></ion-icon>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <p>
+                            <span style="font-size: 10px;">Completed</span>
+                            <span style="float: right">{{task?.task.percentComplete}}%</span>
+                        </p>
+
+                        <div style="width: 100%;border-radius: 10px;background: lightgrey;">
+                            <div class="tasks-percent" id="tasks{{task?.task?.id}}"></div>
+                        </div>
+                    </ion-col>
+                </ion-row>
+            </ion-card-content>
+        </ion-card>
+        <!--<div style="height: 50px;"></div>-->
+        <p *ngIf="tasks?.length == 0" style="padding: 10px;"> No Tasks found</p>
+
+        <!-------------------------------------------------------------------------------------------------------------------
+        ----------------------------------------  Details View --------------------------------------------------------------->
+
+        <div id="taskDetails" [hidden]="viewInfo.showTasksView" style="overflow-y: auto;">
+            <div *ngIf="tabName == 'details'" style="padding-bottom: 50px;">
+                <ion-card style="color: black;">
+                    <ion-card-content style="padding: 20px 10px">
+                        <ion-row style="width: 100%">
+                            <ion-col size="12">
+                                <span style="color: #178e17;">Task :</span> {{task?.name}}
+                            </ion-col>
+                        </ion-row>
+                        <ion-row style="width: 100%">
+                            <ion-col size="12">
+                                <span style="color: #178e17;">Description :</span> {{task?.description}}
+                            </ion-col>
+                        </ion-row>
+                        <ion-row style="width: 100%">
+                            <ion-col size="9">
+                                <span style="color: #178e17;">Assigned To :</span><span> {{task?.assignedTo}}</span>
+                                <br>
+                                <span style="color: #178e17;">Phone Number :</span><span> {{task?.assignedToNumber}}</span>
+                                <ion-icon name="call" style="font-size:18px;padding-left:10px;padding-top: 5px;"></ion-icon>
+                            </ion-col>
+                            <ion-col size="3" style="text-align: center;">
+                                <ion-icon name="person-circle-outline" style="font-size: 50px;"></ion-icon>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row style="width: 100%;">
+                            <ion-col size="12">
+                                <p>
+                                    <span style="font-size: 10px;">Completed</span>
+                                    <span style="float: right">{{task?.percentComplete}}%</span>
+                                </p>
+
+                                <div style="width: 100%;border-radius: 10px;background: lightgrey;">
+                                    <div class="task-percent" id="task{{task?.id}}"></div>
+                                </div>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row style="width: 100%">
+                            <ion-col size="12">
+                                <p><span style="color: #178e17;">Planned Date</span> : <span>{{task?.plannedStartDate}} - {{task?.plannedFinishDate}}</span>
+                                </p>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row *ngIf="task?.actualStartDate != null" style="width: 100%">
+                            <ion-col size="12">
+                                <p><span style="color:#178e17;">Start Date</span> : <span>{{task?.actualStartDate}} - {{task?.actualFinishDate}}</span>
+                                </p>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row style="width: 100%">
+                            <ion-col size="12">
+                                <p><span style="color:#178e17;">Unit of Work</span> : <span>{{task?.unitOfWork}}</span>
+                                </p>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row style="width: 100%">
+                            <ion-col size="12">
+                                <p><span style="color:#178e17;">Total Units</span> : <span>{{task?.totalUnits}}</span>
+                                </p>
+                            </ion-col>
+                        </ion-row>
+                    </ion-card-content>
+                </ion-card>
+            </div>
+
+            <!--------------------------------------------  Files ------------------------------------------>
+
+            <div *ngIf="tabName == 'files'" style="padding-bottom: 50px;">
+                <ion-card *ngFor="let file of files" style="color: black;">
+                    <ion-card-content style="padding: 0 !important;">
+                        <ion-row style="width: 100%;">
+                            <ion-col size="12">
+                                <span style="font-size: 12px;color: #178e17;">File Name</span><br>
+                                <span style="font-weight: 500;font-size: 12px;">{{file?.name}}</span>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row style="width: 100%">
+                            <ion-col size="6">
+                                <span style="font-size: 12px;color: #178e17;">Uploaded By</span><br>
+                                <span style="font-weight: 500;font-size: 12px;">{{file?.createdBy}}</span>
+                            </ion-col>
+                            <ion-col size="6">
+                                <span style="font-size: 12px;color: #178e17;">Uploaded Date</span><br>
+                                <span style="font-weight: 500;font-size: 12px;">{{file?.createdDate}}</span>
+                            </ion-col>
+                        </ion-row>
+                    </ion-card-content>
+                </ion-card>
+                <p *ngIf="files?.length == 0" style="padding: 10px;"> No Files found</p>
+            </div>
+
+            <!------------------------------------------  Media --------------------------------------------->
+
+            <div *ngIf="tabName == 'media'" style="padding-bottom: 50px;">
+                <ion-card *ngFor="let media of media" style="padding: 5px;color: black;">
+                    <ion-card-content style="padding: 0 !important;">
+                        <ion-img [src]="media.src"></ion-img>
+                    </ion-card-content>
+                </ion-card>
+                <p *ngIf="media?.length == 0" style="padding: 10px;"> No Media found</p>
+            </div>
+
+            <!------------------------------------------  Problems ------------------------------------------------->
+
+            <div *ngIf="tabName == 'problems'">
+                <ion-card *ngFor="let problem of problems" style="color: black;">
+                    <ion-card-content>
+                        <ion-row style="width: 100%;">
+                            <ion-col size="12">
+                                <span style="font-weight: 500;color: blue;">{{problem?.title}}</span>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row style="width: 100%;">
+                            <ion-col size="6">
+                                <span style="font-size: 12px;color: #178e17;">Priority</span><br>
+                                <span style="font-weight: 500;font-size: 12px;">{{problem?.priority}}</span>
+                            </ion-col>
+                            <ion-col size="6">
+                                <span style="font-size: 12px;color: #178e17;">Reported By</span><br>
+                                <span style="font-weight: 500;font-size: 12px;">{{problem?.reportedBy}}</span>
+                            </ion-col>
+                        </ion-row>
+                    </ion-card-content>
+                </ion-card>
+                <p *ngIf="problems?.length == 0" style="padding: 10px;"> No Problems found</p>
+            </div>
+        </div>
+
+
+        <!-----------------------------------------------------------------------------------------------------------------
+        -------------------------------------------------  Footer ---------------------------------------------------------->
+
+        <ion-fab vertical="bottom" horizontal="end" slot="fixed" [hidden]="!viewInfo.showTaskIcons"
+                 style="background-color: white;text-align: right;width: 100%;margin-bottom: 40px;">
+            <ion-icon name="attach" style="font-size: 30px;padding: 0 5px;" (click)="openFileSystem()"></ion-icon>
+            <ion-icon name="camera" style="font-size: 30px;" (click)="selectImage()">
+            </ion-icon>
+        </ion-fab>
+        <div [hidden]="viewInfo.showTasksView" id="tabs">
+            <ion-tab-bar slot="bottom">
+                <ion-tab-button [ngStyle]="{'color':tabName === 'details' ? 'blueviolet' : 'black' }"
+                                (click)="showTaskDetails()">
+                    <ion-icon name="calendar"></ion-icon>
+                    <ion-label>Details</ion-label>
+                </ion-tab-button>
+
+                <ion-tab-button [ngStyle]="{'color':tabName === 'files' ? 'blueviolet' : 'black' }"
+                                (click)="showTaskFiles()">
+                    <ion-icon name="person-circle"></ion-icon>
+                    <ion-label>Files</ion-label>
+                    <ion-badge>{{task?.files}}</ion-badge>
+                </ion-tab-button>
+
+                <ion-tab-button [ngStyle]="{'color':tabName === 'media' ? 'blueviolet' : 'black' }"
+                                (click)="showTaskMedia()">
+                    <ion-icon name="map"></ion-icon>
+                    <ion-label>Media</ion-label>
+                    <ion-badge>{{task?.media}}</ion-badge>
+                </ion-tab-button>
+                <ion-tab-button [ngStyle]="{'color':tabName === 'problems' ? 'blueviolet' : 'black' }"
+                                (click)="showTaskProblems()">
+                    <ion-icon name="map"></ion-icon>
+                    <ion-label>Problems</ion-label>
+                    <ion-badge>{{task?.problems}}</ion-badge>
+                </ion-tab-button>
+            </ion-tab-bar>
+        </div>
+
+        <div id="new-task-problem" class="task-problem modal">
+            <div class="task-problem-content">
+                <div id="details-header" style="border-bottom: 1px solid lightgrey;">
+                    <ion-toolbar>
+                        <ion-buttons slot="start">
+                            <ion-button (click)="hideProblem()">
+                                <ion-icon name="arrow-back"></ion-icon>
+                            </ion-button>
+                        </ion-buttons>
+                        <ion-title style="margin: 0;padding: 0;">
+                            New Task Problem
+                        </ion-title>
+                    </ion-toolbar>
+                </div>
+                <div id="details-content" style="padding: 10px;">
+                    <h6 *ngIf="hasError" style="color: red;border: 1px solid red;padding: 3px;text-align: center;">
+                        {{errorMessage}}</h6>
+                    <ion-item>
+                        <ion-label position="stacked">Type</ion-label>
+                        <ion-select placeholder="Select Type" [(ngModel)]="newProblem.type">
+                            <ion-select-option *ngFor="let type of types" [value]="type">{{type.label}}
+                            </ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">Title</ion-label>
+                        <ion-input type="text" [(ngModel)]="newProblem.title" placeholder="Enter Title"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">Priority</ion-label>
+                        <ion-select placeholder="Select Priority" [(ngModel)]="newProblem.priority">
+                            <ion-select-option *ngFor="let priority of priorities">{{priority}}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">Assigned To</ion-label>
+                        <ion-select placeholder="Select Person" [(ngModel)]="newProblem.assignedTo">
+                            <ion-select-option *ngFor="let person of projectPersons" [value]="person">
+                                {{person.fullName}}
+                            </ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">Description</ion-label>
+                        <ion-textarea rows="6" [(ngModel)]="newProblem.description"
+                                      placeholder="Enter Description"></ion-textarea>
+                    </ion-item>
+                    <ion-item>
+                        <ion-button color="primary" size="small"
+                                    (click)="createProblem()">
+                            Create
+                        </ion-button>
+                    </ion-item>
+                </div>
+            </div>
+        </div>
+
+        <div id="new-task" class="task-problem modal">
+            <div class="task-problem-content">
+                <div id="new-task-header" style="border-bottom: 1px solid lightgrey;">
+                    <ion-toolbar>
+                        <ion-buttons slot="start">
+                            <ion-button (click)="hideNewTask()">
+                                <ion-icon name="arrow-back"></ion-icon>
+                            </ion-button>
+                        </ion-buttons>
+                        <ion-title style="margin: 0;padding: 0;">
+                            New Task
+                        </ion-title>
+                    </ion-toolbar>
+                </div>
+                <div id="new-task-content" style="padding: 10px;overflow-y: auto;">
+                    <h6 *ngIf="hasError" style="color: red;border: 1px solid red;padding: 3px;text-align: center;">
+                        {{errorMessage}}</h6>
+
+                    <ion-item>
+                        <ion-label position="stacked">Name</ion-label>
+                        <ion-input type="text" [(ngModel)]="newProblem.title" placeholder="Enter Task Name"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">Description</ion-label>
+                        <ion-textarea rows="6" [(ngModel)]="newProblem.description"
+                                      placeholder="Enter Description"></ion-textarea>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">Site</ion-label>
+                        <ion-select placeholder="Select Site" [(ngModel)]="newProblem.type">
+                            <ion-select-option *ngFor="let site of sites" [value]="site">{{site.name}}
+                            </ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">WBS</ion-label>
+                        <ion-select placeholder="Select WBS" [(ngModel)]="newProblem.priority">
+                            <ion-select-option *ngFor="let wbs of wbsItems" [value]="wbs">{{wbs.name}}
+                            </ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">Assigned To</ion-label>
+                        <ion-select placeholder="Select Person" [(ngModel)]="newProblem.assignedTo">
+                            <ion-select-option *ngFor="let person of projectPersons" [value]="person">
+                                {{person.fullName}}
+                            </ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">Unit of Work</ion-label>
+                        <ion-input type="text" [(ngModel)]="newProblem.title"
+                                   placeholder="Enter Work Units"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">Total Units</ion-label>
+                        <ion-input type="number" [(ngModel)]="newProblem.title"
+                                   placeholder="Enter Total Units"></ion-input>
+                    </ion-item>
+
+                    <ion-item>
+                        <ion-label position="stacked">Inspection By</ion-label>
+                        <ion-select placeholder="Select Inspection Person" [(ngModel)]="newProblem.assignedTo">
+                            <ion-select-option *ngFor="let person of projectPersons" [value]="person">
+                                {{person.fullName}}
+                            </ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
+                        <ion-button color="primary" size="small"
+                                    (click)="createProblem()">
+                            Create
+                        </ion-button>
+                    </ion-item>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-app>
+
+
+<!--<ion-app>
+    <ion-header>
+        <ion-toolbar>
+            <ion-buttons slot="start">
+                <ion-menu-button></ion-menu-button>
+            </ion-buttons>
+            <span style="font-size: 14px;font-weight: 500;">{{project?.name}}</span>
+        </ion-toolbar>
+    </ion-header>
+    <ion-content>
+        <ion-split-pane contentId="task-content" style="z-index: 11">
+            <ion-menu contentId="task-content" type="overlay">
+                <ion-content>
+                    <ion-list>
+                        <ion-menu-toggle>
+                            <ion-item (click)="showDetails()">
+                                <ion-icon name="calendar"></ion-icon>
+                                <ion-label>Details</ion-label>
+                            </ion-item>
+                            <ion-item (click)="showSites()">
+                                <ion-icon name="calendar"></ion-icon>
+                                <ion-label>Sites</ion-label>
+                            </ion-item>
+                            <ion-item (click)="showTasks()">
+                                <ion-icon name="calendar"></ion-icon>
+                                <ion-label>Tasks</ion-label>
+                            </ion-item>
+                            <ion-item (click)="showMedia()">
+                                <ion-icon name="calendar"></ion-icon>
+                                <ion-label>Files</ion-label>
+                            </ion-item>
+                            <ion-item (click)="showMedia()">
+                                <ion-icon name="calendar"></ion-icon>
+                                <ion-label>Media</ion-label>
+                            </ion-item>
+                            <ion-item (click)="showProblems()">
+                                <ion-icon name="calendar"></ion-icon>
+                                <ion-label>Problems</ion-label>
+                            </ion-item>
+                        </ion-menu-toggle>
+                    </ion-list>
+                </ion-content>
+            </ion-menu>
+            <ion-router-outlet id="task-content"></ion-router-outlet>
+        </ion-split-pane>
+        <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+            <ion-icon name="attach" style="font-size: 20px;padding: 0 5px;"></ion-icon>
+            <ion-icon name="camera" style="font-size: 20px;"></ion-icon>
+
+        </ion-fab>
+    </ion-content>
+</ion-app>-->

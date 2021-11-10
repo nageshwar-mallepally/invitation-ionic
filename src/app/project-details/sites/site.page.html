@@ -1,0 +1,153 @@
+<ion-header *ngIf="!viewInfo.showSitesView">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="sitesView()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>{{title}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-card *ngFor="let site of sites?.content" style="color: black;"
+              (click)="openSite(site)" [hidden]="!viewInfo.showSitesView">
+        <ion-card-content style="padding: 0;">
+            <ion-row style="width: 100%;">
+                <ion-col size="12" style="text-align: left;">
+                    <span style="font-size: 10px;">Site</span><br>
+                    <span style="color: blue;">{{site?.name}}</span>
+                </ion-col>
+            </ion-row>
+            <ion-row style="width: 100%;">
+                <ion-col size="12" style="text-align: left;">
+                    <span>{{site?.description}}</span>
+                </ion-col>
+            </ion-row>
+        </ion-card-content>
+    </ion-card>
+    <p *ngIf="sites?.content.length == 0" style="padding: 10px;"> No Sites found</p>
+
+    <div id="siteDetails" [hidden]="viewInfo.showSitesView" style="overflow-y: auto;">
+        <div *ngIf="tabName == 'details'" style="padding-bottom: 50px;">
+            <ion-card style="color: black;">
+                <ion-card-content style="padding: 20px 10px">
+                    <ion-row style="width: 100%">
+                        <ion-col size="12">
+                            <span style="color: #178e17;">Site :</span> {{site?.name}}
+                        </ion-col>
+                    </ion-row>
+                    <ion-row style="width: 100%">
+                        <ion-col size="12">
+                            <span style="color: #178e17;">Description :</span> {{site?.description}}
+                        </ion-col>
+                    </ion-row>
+                    <ion-row style="width: 100%">
+                        <ion-col size="12">
+                            <p>
+                                <span style="color: #178e17;">Tasks Completed</span>
+                                <span style="float: right">{{site?.finishedTasks}} / {{site?.totalTasks}}</span>
+                            </p>
+
+                            <div style="width: 100%;border-radius: 10px;background: lightgrey;">
+                                <div class="site-percent" id="site{{site?.id}}"></div>
+                            </div>
+                        </ion-col>
+                    </ion-row>
+                </ion-card-content>
+            </ion-card>
+        </div>
+
+        <!--------------------------------------------  Tasks ------------------------------------------>
+
+        <div *ngIf="tabName == 'tasks'" style="padding-bottom: 50px;">
+            <ion-card *ngFor="let task of tasks" style="color: black;">
+                <ion-card-content style="padding: 0 !important;">
+                    <ion-row style="width: 100%;">
+                        <ion-col size="12">
+                            <span style="color: #178e17;">Task Name</span><br>
+                            <span>{{task?.task?.name}}</span>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row style="width: 100%">
+                        <ion-col size="6">
+                            <span style="color: #178e17;">Assigned To </span><br>
+                            <span>{{task?.assignedTo}}</span>
+                        </ion-col>
+                        <ion-col size="6">
+                            <span style="color: #178e17;">Phone Number</span><br>
+                            <span>{{task?.phoneNumber}}</span>
+                        </ion-col>
+
+                    </ion-row>
+                    <ion-row style="width: 100%" *ngIf="task?.inspectedBy != null">
+                        <ion-col size="12">
+                            <span style="color: #178e17;">Inspected By : </span><span>{{task?.inspectedBy}}</span><br>
+                            <span style="color: #178e17;">Phone Number : </span><span>{{task?.inspectedByPhone}}</span>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row style="width: 100%">
+                        <ion-col size="6">
+                            <span style="color: #178e17;">Status : </span><span>{{task?.task?.status}}</span><br>
+                        </ion-col>
+                        <ion-col size="6">
+                            <span style="color: #178e17;">Completed : </span><span>{{task?.task.percentComplete}}%</span><br>
+                        </ion-col>
+                    </ion-row>
+                </ion-card-content>
+            </ion-card>
+            <p *ngIf="tasks?.length == 0" style="padding: 10px;"> No Tasks found</p>
+        </div>
+
+        <!------------------------------------------  Resources --------------------------------------------->
+
+        <div *ngIf="tabName == 'resources'" style="padding-bottom: 50px;">
+            <ion-card *ngFor="let resource of resources" style="padding: 5px;color: black;">
+                <ion-card-content style="padding: 0 !important;">
+                    <ion-row style="width: 100%;">
+                        <ion-col size="12">
+                            <span style="color: #178e17;">Task</span><br>
+                            <span>{{resource?.task?.name}}</span>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row style="width: 100%">
+                        <ion-col size="8">
+                            <span *ngIf="resource?.projectResource.resourceType == 'MACHINETYPE'" style="color: #178e17;"> Machine</span>
+                            <span *ngIf="resource?.projectResource.resourceType == 'MATERIALTYPE'" style="color: #178e17;"> Material</span>
+                            <span *ngIf="resource?.projectResource.resourceType == 'MANPOWERTYPE'" style="color: #178e17;"> Man Power </span><br>
+                            <span>{{resource?.resource}}</span>
+
+                        </ion-col>
+                        <ion-col size="4">
+                            <span style="color: #178e17;">Quantity</span><br>
+                            <span>{{resource?.projectResource.quantity}}</span>
+                        </ion-col>
+                    </ion-row>
+                </ion-card-content>
+            </ion-card>
+            <p *ngIf="resources?.length == 0" style="padding: 10px;"> No Media found</p>
+        </div>
+    </div>
+    <div [hidden]="viewInfo.showSitesView" id="tabs">
+        <ion-tab-bar slot="bottom">
+            <ion-tab-button [ngStyle]="{'color':tabName === 'details' ? 'blueviolet' : 'black' }"
+                            (click)="showSiteDetails()">
+                <ion-icon name="calendar"></ion-icon>
+                <ion-label>Details</ion-label>
+            </ion-tab-button>
+
+            <ion-tab-button [ngStyle]="{'color':tabName === 'tasks' ? 'blueviolet' : 'black' }"
+                            (click)="showSiteTasks()">
+                <ion-icon name="person-circle"></ion-icon>
+                <ion-label>Tasks</ion-label>
+                <ion-badge>{{site?.totalTasks}}</ion-badge>
+            </ion-tab-button>
+
+            <ion-tab-button [ngStyle]="{'color':tabName === 'resources' ? 'blueviolet' : 'black' }"
+                            (click)="showSiteResource()">
+                <ion-icon name="map"></ion-icon>
+                <ion-label>Resources</ion-label>
+                <ion-badge>{{site?.resources}}</ion-badge>
+            </ion-tab-button>
+        </ion-tab-bar>
+    </div>
+</ion-content>

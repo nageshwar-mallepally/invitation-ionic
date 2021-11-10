@@ -1,0 +1,116 @@
+<div id="siteDetails-heading"
+     style="background-color: #178e17;box-shadow: 0 0 0 rgba(0, 0, 0, 0.16), 0 1px 6px rgba(0, 0, 0, 0.22);padding: 2px;">
+    <div style="display: flex;width: 100%;padding: 5px;">
+        <ion-icon name="arrow-back" style="font-size: 20px;color: white;padding: 5px;" (click)="back()"></ion-icon>
+        <span style="color: white;padding: 5px;font-size: 16px;">{{site?.name}}</span>
+    </div>
+    <div class="site-tabs">
+        <div id="site-details" class="site-tab" [ngClass]="{'active-tab': siteTabName == 'site-details'}"
+             (click)="selectSiteTab('site-details')">DETAILS
+        </div>
+        <div id="site-tasks" class="site-tab" [ngClass]="{'active-tab': siteTabName == 'site-tasks'}"
+             (click)="selectSiteTab('site-tasks')">TASKS
+        </div>
+        <div id="site-resources" class="site-tab" [ngClass]="{'active-tab': siteTabName == 'site-resources'}"
+             (click)="selectSiteTab('site-resources')">RESOURCES
+        </div>
+    </div>
+</div>
+
+<div id="siteDetails-content" style="overflow-y: auto;background-color: lightgrey;">
+    <div *ngIf="siteTabName == 'site-details'" style="height:100%;overflow-y:auto;padding-bottom: 50px;">
+        <ion-card style="color: black;">
+            <ion-card-content style="padding: 20px 10px">
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Site :</span> {{site?.name}}
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Description :</span> {{site?.description}}
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <p>
+                            <span style="color: #178e17;">Tasks Completed</span>
+                            <span style="float: right">{{site?.finishedTasks}} / {{site?.totalTasks}}</span>
+                        </p>
+
+                        <div style="width: 100%;border-radius: 10px;background: lightgrey;">
+                            <div class="site-percent" id="site{{site?.id}}"></div>
+                        </div>
+                    </ion-col>
+                </ion-row>
+            </ion-card-content>
+        </ion-card>
+    </div>
+
+    <!--------------------------------------------  Tasks ------------------------------------------>
+
+    <div *ngIf="siteTabName == 'site-tasks'" style="height:100%;overflow-y:auto;padding-bottom: 50px;">
+        <ion-card *ngFor="let task of tasks;let idx = index" style="color: black;">
+            <ion-card-content style="padding: 3px;">
+                <ion-row style="width: 100%;" (click)="openTask(task?.task)">
+                    <ion-col size="12" style="text-align: left;">
+                        <span style="font-weight: 500;color: blue;font-size: 12px;">{{task?.task.name}}</span>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Assigned To : </span><span>{{task?.assignedTo}}</span><br>
+                        <span style="color: #178e17;">Phone Number :</span><span> {{task?.phoneNumber}}</span>
+                        <ion-icon name="call" style="font-size:18px;padding-left:5px;margin-bottom: -4px;"
+                                  (click)="callToNumber(task?.phoneNumber)"></ion-icon>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="12">
+                        <p>
+                            <span style="font-size: 10px;">Completed</span>
+                            <span style="float: right">{{task?.task.percentComplete}}%</span>
+                        </p>
+
+                        <div style="width: 100%;border-radius: 10px;background: lightgrey;">
+                            <div class="siteTask-percent" id="siteTasks{{task?.task?.id}}"></div>
+                        </div>
+                    </ion-col>
+                </ion-row>
+            </ion-card-content>
+        </ion-card>
+        <p *ngIf="tasks?.length == 0" style="padding: 10px;"> No Tasks found</p>
+    </div>
+
+    <!------------------------------------------  Resources --------------------------------------------->
+
+    <div *ngIf="siteTabName == 'site-resources'" style="height:100%;overflow-y:auto;padding-bottom: 50px;">
+        <ion-card *ngFor="let resource of resources" style="padding: 5px;color: black;">
+            <ion-card-content style="padding: 0 !important;">
+                <ion-row style="width: 100%;">
+                    <ion-col size="12">
+                        <span style="color: #178e17;">Task</span><br>
+                        <span>{{resource?.task?.name}}</span>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="width: 100%">
+                    <ion-col size="8">
+                                    <span *ngIf="resource?.projectResource.resourceType == 'MACHINETYPE'"
+                                          style="color: #178e17;"> Machine</span>
+                                    <span *ngIf="resource?.projectResource.resourceType == 'MATERIALTYPE'"
+                                          style="color: #178e17;"> Material</span>
+                                    <span *ngIf="resource?.projectResource.resourceType == 'MANPOWERTYPE'"
+                                          style="color: #178e17;"> Man Power </span><br>
+                        <span>{{resource?.resource}}</span>
+
+                    </ion-col>
+                    <ion-col size="4">
+                        <span style="color: #178e17;">Quantity</span><br>
+                        <span>{{resource?.projectResource.quantity}}</span>
+                    </ion-col>
+                </ion-row>
+            </ion-card-content>
+        </ion-card>
+        <p *ngIf="resources?.length == 0" style="padding: 10px;"> No Media found</p>
+    </div>
+</div>
