@@ -1,7 +1,7 @@
 # invitation-ionic
 
 This Invitation application using ionic 
-I practiced with differenct domain.
+
 
 ## Modules
 ### login
