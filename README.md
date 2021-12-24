@@ -1,4 +1,4 @@
-# invitation-ionic
+# ionic-practice
 
 Application using ionic 
 
